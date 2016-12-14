@@ -1,5 +1,5 @@
 /*
- * Validate.js v0.1
+ * Validate.js v0.2
  * 
  * Date: 2016-12-07
  * Github: bili/validate.js
@@ -89,9 +89,19 @@
     //用于格式化输出
     //@param str<String> 模板, 变量用#{xxx}包裹
     //@param data<JSON Object> 变量对象，用{}包裹
-    //@return <String> 编译后的模板结果
-    function tmpl(str, data) {
+    //@param scope<Object> 上下文对象
+    //主要用于解决该项目中无法获取实时的控件value，因此利用函数来workround，
+    //因此需要在需要具体的控件value时，需要将函数执行来获得value。
+    //这种情况目前只出现在给定的input和select控件上。
+    //@return <String> 编译后的模板结果                                                                                                                         
+    function tmpl(str, data, scope) {
+        var that = scope || this;
+        if (!str) return;
         str = str.replace(/#{([^}]*)}/g, function(val, replacement) {
+            if (replacement == 'input' || replacement == 'select') {
+                var fn = (eval('data.' + replacement));
+                if (isFunction(fn)) return fn.call(that);
+            } 
             return eval('data.' + replacement);
         });
         return str;
@@ -118,7 +128,10 @@
         if (this.dom.length == 0) {
             throw new Error(tmpl('不存在选择器#{el}', {el: this.el}));
         }
+        // 验证队列
+        // 每次添加一个验证规则，都会加入到此队列中
         this.sequence = [];
+        // 用于记录实时的验证状态
         this.status = {passed: false, msg: ''};
         return this;
     }
@@ -179,17 +192,18 @@
             'select-empty': '至少选择一项',
             'checkbox-empty': '至少选择一项',
             'radio-empty': '请选择',
-            'match': '#{input}: 不符合要求',
             'range': '不在规定范围(#{$0}, #{$1})内',
             'equals': '不相等',
-            'contains': '不包含指定字符(串): #{$0}'
+            'contains': '不包含指定字符(串): #{$0}',
+            'defer': 'pending...',
+            'ok': 'ok'
         }
     };
 
     //用于输出验证状态
-    //前提需要在被测对象同级插入class="msg"的dom
+    //前提条件：需要在被测对象同级插入class="msg"的dom
     //状态包含ok/fail，因此页面样式最好不要再另外定义ok/fail样式，
-    //避免冲突
+    //以避免冲突
     _V.msg = {};
 
     _V.msg.ok = function(dom, msg) {
@@ -218,7 +232,8 @@
     //如果为<Array>，则其中的元素类型与上述规则相同
     //如果为<PatternWord>，则只能是内建正则缩写，或是使用V.pattern()定义新的规则
     //如果为<Function>，则返回值类型必须为<Boolean>
-    //@param [msg<String>] 不满足该规则时的输出信息
+    //@param [msg<String>] 不满足该规则时的输出信息, 
+    //没有提供默认提示信息, 该信息会覆盖内嵌信息，不写，则保留内嵌信息
     //@return <V instance>
     _V.prototype.match = function(pattern, msg) {
         var that = this;
@@ -249,8 +264,10 @@
                     }
                 },
                 args: arguments,
-                fields: arguing({input: this.dom[0].value}, arguments),
-                msg: msg || _V.defaults.msg.match,
+                // input值采用函数的方式，是为了解决无法获取最新的value，
+                // 当需要具体的input值时，再执行该函数获取最新值
+                fields: arguing({input: function() {return this.dom[0].value}}, arguments),
+                msg: msg,
                 scope: this
             });
         }
@@ -290,12 +307,10 @@
                 if (arguments.length > 1) {
                     full = isBoolean(isFull) ? isFull : full;
                 }
-                //var p = new RegExp("^\\b"+chars+"\\b$");
-                //p.lastIndex = 0;
                 return full ? this.dom[0].value === chars : this.dom[0].value.indexOf(chars) != -1;
             },
             args: arguments,
-            fields: arguing({input: this.dom[0].value}, arguments),
+            fields: arguing({input: function() {return this.dom[0].value}}, arguments),
             msg: msg || _V.defaults.msg.contains,
             scope: this
         });
@@ -303,7 +318,7 @@
     };
 
     //判断是否相等
-    //_V.prototype.contains 的简写，默认isFull=true
+    //_V.prototype.contains的简写，默认isFull=true
     _V.prototype.equals = function(chars, msg) {
         return this.contains(chars, true, msg||_V.defaults.msg.equals);
     };
@@ -319,25 +334,25 @@
         if (isCheckbox(this.dom[0])) {
             this.sequence.push({
                 fn: function() {
-                    var len = [].filter.call(this.dom, function(d) {
+                    var len = [].filter.call(that.dom, function(d) {
                         return d.checked;
                     }).length;
                     return len >= min && len <= max;
                 },
                 args: arguments,
                 fields: arguing({
-                    select: (function() {
+                    select: function() {
                         return [].filter.call(that.dom, function(d) {
                             return d.checked;
                         }).length;
-                    }()), 
-                    input: (function() {
+                    }, 
+                    input: function() {
                         var v = [];
                         [].forEach.call(that.dom, function(d) {
                             if (d.checked) v.push(d.value);
                         });
                         return v.join(',');
-                    }())
+                    }
                 }, arguments),
                 msg: msg || _V.defaults.msg.range,
                 scope: this
@@ -345,25 +360,25 @@
         } else if (isSelect(this.dom[0])) {
             this.sequence.push({
                 fn: function() {
-                    var len = [].filter.call(this.dom[0].querySelectorAll('option'), function(o) {
+                    var len = [].filter.call(that.dom[0].querySelectorAll('option'), function(o) {
                         return o.selected;
                     }).length;
                     return len >= min && len <= max;
                 },
                 args: arguments,
                 fields: arguing({
-                    select: (function() {
+                    select: function() {
                         return [].filter.call(that.dom[0].querySelectorAll('option'), function(o) {
                             return o.selected;
                         }).length;
-                    }()), 
-                    input: (function() {
+                    }, 
+                    input: function() {
                         var v = [];
                         [].forEach.call(that.dom[0].querySelectorAll('option'), function(o) {
                             if (o.selected) v.push(o.value);
                         });
                         return v.join(',');
-                    }())
+                    }
                 }, arguments),
                 msg: msg || _V.defaults.msg.range,
                 scope: this
@@ -382,11 +397,32 @@
                     } else return false;
                 },
                 args: arguments,
-                fields: arguing({input: that.dom[0].value}, arguments),
+                fields: arguing({input: function() {return that.dom[0].value}}, arguments),
                 msg: msg || _V.defaults.msg.range,
                 scope: this
             });
         } else throw new Error(tmpl('#{el}不支持range方法', {el: this.el}));
+        return this;
+    };
+
+    //延时验证
+    //包括ajax、setTimeout等方法
+    //@param cb<Function> 验证逻辑
+    //@param [msg<String>] 不满足该规则时的输出信息
+    _V.prototype.defer = function(cb, msg) {
+        if (!isFunction(cb)) throw new Error('defer仅支持函数参数');
+        this.sequence.push({
+            fn: function() {
+                var that = this;
+                return new Promise(function(resolve, reject) {
+                    cb.call(that, that.dom[0].value, resolve, reject);
+                });
+            },
+            args: arguments,
+            fields: arguing({input: function() {this.dom[0].value}}, arguments),
+            msg: msg || _V.defaults.msg.defer,
+            scope: this
+        });
         return this;
     };
 
@@ -397,35 +433,61 @@
     //如果为<Function>，则无论与否，回调cb(<验证结果>, <验证状态>)
     //@return <Boolean> 验证通过|不通过
     _V.prototype.go = function(cb) {
-        var idx = 0;
-        var flag = false;
-        flag = this.sequence.every(function(item, i) {
-            var args = Array.prototype.slice.call(item.args);
-            idx = i;
-            var ret = item.fn.apply(item.scope, args);
-            return ret instanceof _V ? ret = ret.go() : isBoolean(ret) ? ret : false;
-        });
-        //When failed to validate...
-        if (!flag) {
-            var curItem = this.sequence[idx];
-            if (curItem.args.length > 0) {
-                var msg = tmpl(curItem.msg, curItem.fields);
-                _V.msg.fail(this.dom[0], tmpl(curItem.msg, curItem.fields));
-                this.status = {passed: false, msg: msg};
-            }
-        } else {
-            if (arguments.length == 0) _V.msg.ok(this.dom[0], '');
-            else {
-                if (isString(cb)) {
-                    var msg = tmpl(cb, {input: this.dom[0].value});
-                    _V.msg.ok(this.dom[0], msg);
+        var that = this;
+        var iterator = this.sequence[Symbol.iterator]();
+        var item;
+        var ret = true;
+        var callee;
+        (function run() {
+            callee = arguments.callee;
+            if (ret == true && (item = iterator.next()) && !item.done) {
+                var args = Array.prototype.slice.call(item.value.args);
+                ret = item.value.fn.apply(item.value.scope, args);
+                _V.msg.ok(that.dom[0], _V.defaults.msg.defer);
+                if (ret instanceof Promise) {
+                    ret.then(function() {
+                        ret = true;
+                        _V.msg.ok(that.dom[0], _V.defaults.msg.ok);
+                        callee.call(that);
+                    }, function() {
+                        if (item.value.args.length > 0) {
+                            var msg = tmpl(item.value.msg, item.value.fields, that);
+                            _V.msg.fail(that.dom[0], msg);
+                            that.status = {passed: false, msg: msg};
+                        }
+                        ret = false;
+                        if (isFunction(cb)) cb.call(that, that.status);
+                    });
+                } else {
+                    ret instanceof _V ? ret = ret.go() : isBoolean(ret) ? ret : false;
+                    if (!ret) {
+                        if (item.value.args.length > 0) {
+                            var msg = tmpl(item.value.msg, item.value.fields, that);
+                            _V.msg.fail(that.dom[0], msg);
+                            that.status = {passed: false, msg: msg};
+                        }
+                        if (isFunction(cb)) cb.call(that, that.status);
+                    } else {
+                        _V.msg.ok(that.dom[0], _V.defaults.msg.ok);
+                        callee.call(that);
+                    }
+                }
+            } else if (item.done) {
+                that.status = {passed: true, msg: _V.defaults.msg.ok};
+                if (typeof cb == 'undefined') _V.msg.ok(that.dom[0], that.status.msg);
+                else {
+                    if (isString(cb)) {
+                        var msg = tmpl(cb, {input: that.dom[0].value});
+                        _V.msg.ok(that.dom[0], msg);
+                    } else {
+                        if (isFunction(cb)) {
+                            cb.call(that, that.status);
+                        }
+                    }
                 }
             }
-            this.status = {passed: true, msg: ''};
-        }
-        //Passed or failed
-        if (isFunction(cb)) cb.call(this, this.status);
-        return flag;
+        }());
+        return item.done;
     };
 
     //对外暴露的接口
@@ -443,7 +505,7 @@
         } else return;
     }
 
-    //顺序执行验证，不满足则中断
+    //顺序执行验证，不满足则中断，始终从第一个开始验证
     //如果错误，返回第一个中断信息
     //@param <Array<V instance>|Mutiple V instances> 待验证的多个验证对象 
     //@return <Function> go(cb)
@@ -457,11 +519,23 @@
         } else args = Array.prototype.slice.call(arguments);
         return {
             go: function(cb) {
-                var cur_v;
-                var flag = args.every(function(v) {
-                    return (cur_v = v).go();
-                });
-                isFunction(cb) && cb.call(null, flag, cur_v.status);
+                var v, callee;
+                var iterator = args[Symbol.iterator]();
+                (function() {
+                    callee = arguments.callee;
+                    if ((v = iterator.next()) && !v.done) {
+                        var p = new Promise(function(resolve, reject) {
+                            v.value.go(function(ret) {
+                                ret.passed ? resolve(ret) : reject(ret);
+                            });
+                        });
+                        p.then(function(ret) {
+                            callee.call();
+                        }, function(ret) {
+                            isFunction(cb) && cb.call(null, v.done, v.value.status);
+                        });
+                    } else if (v.done) isFunction(cb) && cb.call(null, v.done, {passed: v.done, msg: _V.defaults.msg.ok});
+                }());
             }
         }
     };
@@ -480,14 +554,24 @@
         } else args = Array.prototype.slice.call(arguments);
         return {
             go: function(cb) {
+                var toTest = [];
                 var failed_vs_status = [];
-                var vs = args.filter(function(v) {
-                    return !v.go();
-                });
-                vs.forEach(function(item) {
-                    failed_vs_status.push(item.status);
+                args.forEach(function(item) {
+                    toTest.push((function(v) {
+                        return new Promise(function(resolve, reject) {
+                            v.go(function(ret) { resolve(ret); });
+                        });
+                    }(item)));
                 })
-                isFunction(cb) && cb.call(null, vs.length == 0, failed_vs_status);
+                Promise
+                    .all(toTest)
+                    .then(function(ret) {
+                        var not_passed_vs = ret.filter(function(v) {
+                            return !v.passed;
+                        });
+                        if (not_passed_vs.length == 0) isFunction(cb) && cb.call(null, true, []);
+                        else isFunction(cb) && cb.call(null, false, not_passed_vs);
+                    })
             }
         }
     };
