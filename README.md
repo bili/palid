@@ -8,15 +8,15 @@ Client-Side Javascript Validation
 ### 使用
 ```
 V('input')
-    .notEmpty('请输入整数')
-    .match('integer')
+    .notEmpty()
+    .match('integer','请输入整数')
     .go(function(s) {
         console.log(s);
     });
         
 V('input[name="num"]')
     .notEmpty('num不能为空')
-    .match('integer')
+    .match('integer','请输入整数')
     .range(-100, 200, '#{input}不在(#{$0}~#{$1})内')
     .go('ok');
 
