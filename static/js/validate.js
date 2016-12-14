@@ -145,24 +145,8 @@
 
         //整数
         'integer': /^-?\d+$/,
-        //正整数 如：023
-        'positive-integer': /^[0-9]*[1-9][0-9]*$/,
-        //负整数
-        'negative-integer': /^-[0-9]*[1-9][0-9]*$/,
-        //非正整数(负整数+0)
-        'not-positive-integer': /^((-\\d+)|(0+))$/,
-        //非负整数(正整数+0)
-        'not-negative-integer': /^\d+$/,
         //浮点数
         'float': /^(-?\\d+)(\\.\\d+)?$/,
-        //正浮点数
-        'positive-float': /^(([0-9]+\\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\\.[0-9]+)|([0-9]*[1-9][0-9]*))$/,
-        //负浮点数
-        'negative-float': /^(-(([0-9]+\\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\\.[0-9]+)|([0-9]*[1-9][0-9]*)))$/,
-        //非正浮点数(负浮点数+0)
-        'not-positive-float': /^((-\\d+(\\.\\d+)?)|(0+(\\.0+)?))$/,
-        //非负浮点数(正浮点数+0)
-        'not-negative-float': /^((-\\d+(\\.\\d+)?)|(0+(\\.0+)?))$/,
         //偶数
         'even': function(v) { return v % 2 == 0; },
         //奇数
@@ -174,10 +158,6 @@
         'simple-name': /^[$_\d\w]\S*$/,
         //英文单词, 中间可以保留'-'
         'word': /^[a-zA-Z]+(-[a-zA-Z]+)*$/,
-        //是否包含中文（日文，韩文）
-        'has-zh': /[\u4E00-\u9FA5\uF900-\uFA2D]/,
-        //是否含有全角符号
-        'hasFullWidthChars': /[\uFF00-\uFFEF]/,
 
         /********************日期*******************/
 
@@ -249,18 +229,22 @@
         else {
             this.sequence.push({
                 fn: function() {
-                    if (isFunction(pattern)) {
-                        return pattern.call(this, this.dom[0].value);
-                    } else if (isPattern(pattern)) {
-                        pattern.lastIndex = 0;
-                        return pattern.test(this.dom[0].value);
-                    } else if (isString(pattern)) {
-                        var p = _V.patterns[pattern];
-                        if (isFunction(p)) return p.call(this, this.dom[0].value);
-                        else {
-                            p.lastIndex = 0;
-                            return p ? p.test(this.dom[0].value) : false;
+                    try {
+                        if (isFunction(pattern)) {
+                            return pattern.call(this, this.dom[0].value);
+                        } else if (isPattern(pattern)) {
+                            pattern.lastIndex = 0;
+                            return pattern.test(this.dom[0].value);
+                        } else if (isString(pattern)) {
+                            var p = _V.patterns[pattern];
+                            if (isFunction(p)) return p.call(this, this.dom[0].value);
+                            else {
+                                p.lastIndex = 0;
+                                return p ? p.test(this.dom[0].value) : false;
+                            }
                         }
+                    } catch(e) {
+                        throw new Error(tmpl('验证规则#{p}不存在', {p: pattern}));
                     }
                 },
                 args: arguments,
@@ -501,8 +485,9 @@
     V.pattern = function(pattern_name, pattern_body) {
         if (arguments.length != 2 || !isString(pattern_name)) return;
         if (isPattern(pattern_body) || isFunction(pattern_body)) {
-            _V.patterns[pattern_name] = pattern_body;
-        } else return;
+            if (!_V.patterns[pattern_name]) _V.patterns[pattern_name] = pattern_body;
+        }
+        return;
     }
 
     //顺序执行验证，不满足则中断，始终从第一个开始验证
