@@ -1,7 +1,7 @@
 {
   "name": "validate",
   "description": "Client-Side Javascript Validation",
-  "version": "0.2",
+  "version": "2.0.0",
   "main": "index.html",
   "homepage": "https://github.com/bili/validate",
   "repository": {
