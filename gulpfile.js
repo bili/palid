@@ -22,3 +22,5 @@ gulp.task('cssmin', function (cb) {
         gulp.dest('dist/style/')
     ], cb);
 });
+
+gulp.task('default', ['jsmin', 'cssmin'])
