@@ -4,7 +4,7 @@ Client-Side Javascript Validation
 ### 安装
 下载并直接在页面引入脚本 validate.min.js</br>
 ```
-<script src="js/Tween.js"></script>
+<script src="dist/script/validate.min.js"></script>
 ```
 
 如果需要使用更多扩展规则，可以引入 validate.patterns.min.js，此文件不是必须文件，这里面会不断收集更多的验证规则方便开发者使用。
