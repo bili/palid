@@ -1,5 +1,5 @@
 /*
- * Validate.js v0.2
+ * Validate.js v0.2.1
  * 
  * Date: 2016-12-07
  * Github: bili/validate.js
@@ -8,7 +8,6 @@
 //todos:
     //multiple selector
     //tag data-xxx
-    //ajax
 
 (function() {
     //类似 jquery
@@ -278,6 +277,7 @@
 
     //判断是否包含 chars 字符串
     //@param chars<String> 包含的字符串
+    //只支持<Text>
     //@param [isFull<Boolean, Default=false>]: 是否完全与输入匹配相等
     //@param [msg<String>] 不满足该规则时的输出信息
     //@return <V instance> 
@@ -390,7 +390,7 @@
     };
 
     //延时验证
-    //包括ajax、setTimeout等方法
+    //支持ajax、setTimeout等方法
     //@param cb<Function> 验证逻辑
     //@param [msg<String>] 不满足该规则时的输出信息
     _V.prototype.defer = function(cb, msg) {
