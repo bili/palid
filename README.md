@@ -36,7 +36,7 @@ check.go('ok');
 ### 更新
 #### v0.2-2016/12/13
 1. 支持ajax、settimeout等延时验证
-2. 只保留最基本的验证规则，扩展的验证规则都移到 static/js/patterns.js
+2. 只保留最基本的验证规则，扩展的验证规则都移到 dist/script/patterns.min.js 中
 
 #### v0.1-2016/12/09
 1. 支持类input、select、checkbox控件的验证
