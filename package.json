@@ -1,0 +1,24 @@
+{
+  "name": "validate",
+  "description": "Client-Side Javascript Validation",
+  "version": "0.2",
+  "main": "index.html",
+  "homepage": "https://github.com/bili/validate",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bili/validate.git"
+  },
+  "bugs": {
+    "url": "https://github.com/bili/validate/issuess"
+  },
+  "license": "MIT",
+  "keywords": [
+    "validate"
+  ],
+  "devDependencies": {
+    "gulp-clean-css": "^3.0.3",
+    "gulp-rename": "^1.2.2",
+    "gulp-uglify": "^2.0.1",
+    "pump": "^1.0.2"
+  }
+}
