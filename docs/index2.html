@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Validate</title>
+        <link rel="stylesheet" type="text/css" href="dist/style/validate.min.css">
+        <link rel="stylesheet" type="text/css" href="dist/style/index.min.css">
+    </head>
+
+    <body>
+        <div class="wrapper">
+            <div class="operations">
+                <select class="testcases">
+                    <option value="1">Case1</option>
+                    <option value="2">Case2</option>
+                    <option value="3">Case3</option>
+                    <option value="4">Case4</option>
+                    <option value="5">Case5</option>
+                    <option value="6">Case6</option>
+                    <option value="7">Case7</option>
+                    <option value="8">Case8</option>
+                    <option value="9">Case9</option>
+                    <option value="10">Case10</option>
+                    <option value="11">Case11</option>
+                </select>
+                <a class="run" href="">Run</a>
+            </div>
+            <div class="testcase testcase1">
+                <h3>Case 1 - 输入奇数</h3>
+                <div>
+                    <input id="option" type="checkbox" name=""/>
+                    <label for="option"></label>
+                    <input type="text" name="num" value=""/>
+                    <span class="msg"></span>
+                </div>
+            </div>
+            <div class="testcase testcase2">
+                <h3>Case 2 -  验证密码</h3>
+                <div>
+                    <input type="text" name="p1" value="" placeholder="p1"/>
+                    <input type="text" name="p2" value="" placeholder="p2"/>
+                    <span class="msg"></span>
+                </div>
+            </div>
+            <div class="testcase testcase3">
+                <h3>Case 3 -  验证日期范围</h3>
+                <div>
+                    <input type="date" name="date" value="2016-03-22"/>
+                    <span class="msg"></span>
+                </div>
+            </div>
+            <div class="testcase testcase4">
+                <h3>Case 4 -  验证数字范围</h3>
+                <div>
+                    <input type="text" name="num" value="1000"/>
+                    <span class="msg"></span>
+                </div>
+            </div>
+            <div class="testcase testcase5">
+                <h3>Case 5 -  验证复选框</h3>
+                <div>
+                    <input type="checkbox" name="hobbies" value="1"/>
+                    <input type="checkbox" name="hobbies" value="2"/>
+                    <input type="checkbox" name="hobbies" value="3"/>
+                    <input type="checkbox" name="hobbies" value="4"/>
+                    <input type="checkbox" name="hobbies" value="5"/>
+                    <span class="msg"></span>
+                </div>
+            </div>
+            <div class="testcase testcase6">
+                <h3>Case 6 -  验证选择</h3>
+                <div>
+                    <select multiple>
+                        <option value="red">red</option>
+                        <option value="blue">blue</option>
+                        <option value="gold">gold</option>
+                        <option value="cyan">cyan</option>
+                        <option value="purple">purple</option>
+                    </select>
+                    <span class="msg"></span>
+                </div>
+            </div>
+            <div class="testcase testcase7">
+                <h3>Case 7 -  自定义匹配规则</h3>
+                <div>
+                    <input type="text" value="sasaki aki"/>
+                    <span class="msg"></span>
+                </div>
+            </div>
+            <div class="testcase testcase8">
+                <h3>Case 8 -  自定义信息显示</h3>
+                <div>
+                    <input type="text" value=""/>
+                    <span class="msg"></span>
+                </div>
+            </div>
+            <div class="testcase testcase9">
+                <h3>Case 9 -  串/并行验证</h3>
+                <div class="a">
+                    <input type="text" name="num" value="1000"/>
+                    <span class="msg"></span>
+                </div>
+                <div class="b">
+                    <input type="checkbox" name="hobbies" value="1"/>
+                    <input type="checkbox" name="hobbies" value="2"/>
+                    <input type="checkbox" name="hobbies" value="3"/>
+                    <input type="checkbox" name="hobbies" value="4"/>
+                    <input type="checkbox" name="hobbies" value="5"/>
+                    <span class="msg"></span>
+                </div>
+                <div class="c">
+                    <input type="text" name="name" value="sasaki aki"/>
+                    <span class="msg"></span>
+                </div>
+            </div>
+            <div class="testcase testcase10">
+                <h3>Case 10 -  验证单选框</h3>
+                <div>
+                    <input type="radio" name="hobbies" value="1"/>
+                    <input type="radio" name="hobbies" value="2"/>
+                    <input type="radio" name="hobbies" value="3"/>
+                    <input type="radio" name="hobbies" value="4"/>
+                    <input type="radio" name="hobbies" value="5"/>
+                    <span class="msg"></span>
+                </div>
+            </div>
+            <div class="testcase testcase11">
+                <h3>Case 11 -  异步</h3>
+                <div>
+                    <input type="text" id="num" value=""/>
+                    <span class="msg"></span>
+                </div>
+            </div>
+        </div>
+        <script src="dist/script/validate.min.js"></script>
+        <script src="dist/script/validate.patterns.min.js"></script>
+        <script src="dist/script/index.min.js"></script>
+    </body>
+
+</html>
