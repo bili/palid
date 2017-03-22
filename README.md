@@ -14,7 +14,7 @@ Client-Side Javascript Validation
 V('input')
     .notEmpty()
     .match('integer','请输入整数')
-    .go(function(s) {
+    .done(function(s) {
         console.log(s);
     });
         
@@ -22,18 +22,22 @@ V('input[name="num"]')
     .notEmpty('num不能为空')
     .match('integer','请输入整数')
     .range(-100, 200, '#{input}不在(#{$0}~#{$1})内')
-    .go('ok');
+    .done('ok');
 
 var check = V('input[name="hobbies"]')
   .notEmpty()
   .range(1, 2, '已选择#{select}个（值为#{input}），请至少选择#{$0}个，最多选择#{$1}个');
-check.go('ok');
+check.done('ok');
 ```
 
-当且仅当执行`go()`时才进行验证</br>
+当且仅当执行`done()`时才进行验证</br>
 更多用例请见 index.html
 
 ### 更新
+#### v0.3-2017/03/22
+1. 将go()调整为done()
+2. done()在通过的情况下也会在回调中返回对应dom列表
+
 #### v0.2-2016/12/13
 1. 支持ajax、settimeout等延时验证
 2. 只保留最基本的验证规则，扩展的验证规则都移到 dist/script/patterns.min.js 中
