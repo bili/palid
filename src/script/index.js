@@ -17,7 +17,7 @@ function runCase1() {
         .match('integer', '#{input} must be number.')
         .match('even', '#{input} must be even.')
         .range(0, 100, '#{input} must be between #{$0} and #{$1}.')
-        .go(function(flag) {
+        .done(function(flag) {
             if (!flag) this.dom.classList.add('error');
             else this.dom.classList.remove('error');
         });
@@ -27,14 +27,14 @@ function runCase1() {
     //V('.testcase1 input[name="num1"]')
         //.notEmpty('Name must not be empty.')
         //.contains('test')
-        //.go('ok');
+        //.done('ok');
         
 
     /*
     V('.testcase1 input[name="name"]')
         .notEmpty('Name must not be empty.')
         .match('word', 'Name must be a legal word.')
-        .go('ok');
+        .done('ok');
         */
 
     /*
@@ -43,7 +43,7 @@ function runCase1() {
     }
     V('.testcase1 input[name="num"]')
         .match(['!empty', /^\d+$/g, 'odd', rangeFn], 'You input: #{input}\n\t #{$0} is not satisfied.')
-        .go('ok');
+        .done('ok');
         */
 
     V('.testcase1 input[name="num"]')
@@ -54,7 +54,7 @@ function runCase1() {
         .notEmpty()
         //这样编码更容易定义递进规则
         .match(['!empty', 'positive-integer', 'odd'], '请输入奇数')
-        .go(function(ret) {
+        .done(function(ret) {
             console.log(ret);
         });
 }
@@ -67,47 +67,47 @@ function runCase2() {
         })
         .notEmpty('P2密码不能为空')
         .equals(document.querySelector('input[name="p1"]').value, '密码不一致')
-        .go('ok');
+        .done('ok');
 }
 function runCase3() {
     //V('.testcase3 input[name="date"]')
         //.notEmpty('date不能为空')
         //.range(Date('2010-02-03'), Date(), '#{input}不在(#{$0}~#{$1})内')
-        //.go('ok');
+        //.done('ok');
     V('input[name="date"]')
         .notEmpty('date不能为空')
         .match('date', '日期格式yyyy-mm-dd')
         .range('2010-02-03', '2016-02-03', '不在(#{$0}~#{$1})内')
-        .go('ok');
+        .done('ok');
 }
 function runCase4() {
     V('.testcase4 input[name="num"]')
         .notEmpty('num不能为空')
         .match('integer')
         .range(-100, 200, '#{input}不在(#{$0}~#{$1})内')
-        .go('ok');
+        .done('ok');
 }
 var check = V('.testcase5 input[name="hobbies"]')
     .notEmpty()
     .range(1, 2, '已选择#{select}个（值为#{input}），请至少选择#{$0}个，最多选择#{$1}个')
 function runCase5() {
-    check.go('ok');
+    check.done('ok');
 }
 var select = V('.testcase6 select')
     .notEmpty()
     .range(1, 2, '已选择#{select}个（值为#{input}），请至少选择#{$0}个，最多选择#{$1}个')
 function runCase6() {
-        select.go('ok');
+        select.done('ok');
 }
 function runCase7() {
     V.pattern('is-zh', /[\u4E00-\u9FA5\uF900-\uFA2D]/);
-    V('.testcase7 input').match('is-zh', '请输入包含中文的字符串').go('ok');
+    V('.testcase7 input').match('is-zh', '请输入包含中文的字符串').done('ok');
 }
 function runCase8() {
     V('.testcase8 input')
         .notEmpty('请输入正整数')
         .match('integer')
-        .go(function(s) {
+        .done(function(s) {
             console.log(s);
         });
 }
@@ -130,15 +130,15 @@ function runCase9() {
             }, 2000);
         }, '必须大于24')
         //.match('has-zh', '请输入包含中文的字符串')
-    V.serial(a, b, c).go(function(flag, status) {
+    V.serial(a, b, c).done(function(flag, status) {
         console.log(flag, status);
     });
-    // V.parallel([a, b, c]).go(function(flag, vs) {
+    // V.parallel([a, b, c]).done(function(flag, vs) {
     //     console.log(flag, vs);
     // });
 }
 function runCase10() {
-    V('.testcase10 input[name="hobbies"]').notEmpty().go();
+    V('.testcase10 input[name="hobbies"]').notEmpty().done();
 }
 var v = V('.testcase11 input')
     .notEmpty()
@@ -159,7 +159,7 @@ var v = V('.testcase11 input')
     }, '必须大于44')
     .match(function(v) {
         return v == 50;
-        }, '数字只能填50');
+    }, '数字只能填50');
 function runCase11() {
     //var v = V('.testcase11 input')
         //.notEmpty()
@@ -174,5 +174,5 @@ function runCase11() {
                 //else reject();
             //}, 2000);
         //}, '必须大等于54')
-        v.go('yes');
+        v.done('yes');
 }

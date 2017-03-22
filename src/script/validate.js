@@ -416,7 +416,7 @@
     //如果为<String>，则当且仅当@return == true时，输出cb
     //如果为<Function>，则无论与否，回调cb(<验证结果>, <验证状态>)
     //@return <Boolean> 验证通过|不通过
-    _V.prototype.go = function(cb) {
+    _V.prototype.done = function(cb) {
         var that = this;
         var iterator = this.sequence[Symbol.iterator]();
         var item;
@@ -443,7 +443,7 @@
                         if (isFunction(cb)) cb.call(that, that.status);
                     });
                 } else {
-                    ret instanceof _V ? ret = ret.go() : isBoolean(ret) ? ret : false;
+                    ret instanceof _V ? ret = ret.done() : isBoolean(ret) ? ret : false;
                     if (!ret) {
                         if (item.value.args.length > 0) {
                             var msg = tmpl(item.value.msg, item.value.fields, that);
@@ -457,7 +457,7 @@
                     }
                 }
             } else if (item.done) {
-                that.status = {passed: true, msg: _V.defaults.msg.ok};
+                that.status = {passed: true, msg: _V.defaults.msg.ok, dom: that.dom};
                 if (typeof cb == 'undefined') _V.msg.ok(that.dom[0], that.status.msg);
                 else {
                     if (isString(cb)) {
@@ -485,7 +485,8 @@
     V.pattern = function(pattern_name, pattern_body) {
         if (arguments.length != 2 || !isString(pattern_name)) return;
         if (isPattern(pattern_body) || isFunction(pattern_body)) {
-            if (!_V.patterns[pattern_name]) _V.patterns[pattern_name] = pattern_body;
+            //if (_V.patterns[pattern_name]) throw new Error(tmpl('已存在匹配规则#{pattern}', {pattern: pattern_name}));
+            _V.patterns[pattern_name] = pattern_body;
         }
         return;
     }
@@ -493,9 +494,9 @@
     //顺序执行验证，不满足则中断，始终从第一个开始验证
     //如果错误，返回第一个中断信息
     //@param <Array<V instance>|Mutiple V instances> 待验证的多个验证对象 
-    //@return <Function> go(cb)
+    //@return <Function> done(cb)
     //cb的回调参数为验证通过结果和第一个不通过验证的验证状态
-    //只有当执行go()时，才依次执行验证过程
+    //只有当执行done()时，才依次执行验证过程
     V.serial = function() {
         var args = [];
         if (arguments.length == 0) return;
@@ -503,14 +504,14 @@
             args = arguments[0];
         } else args = Array.prototype.slice.call(arguments);
         return {
-            go: function(cb) {
+            done: function(cb) {
                 var v, callee;
                 var iterator = args[Symbol.iterator]();
                 (function() {
                     callee = arguments.callee;
                     if ((v = iterator.next()) && !v.done) {
                         var p = new Promise(function(resolve, reject) {
-                            v.value.go(function(ret) {
+                            v.value.done(function(ret) {
                                 ret.passed ? resolve(ret) : reject(ret);
                             });
                         });
@@ -538,9 +539,9 @@
     //并行执行验证，遇错继续执行
     //如果错误，返回所有中断信息(数组)
     //@param <Array<V instance>|Mutiple V instances> 待验证的多个验证对象 
-    //@return <Function> go(cb)
+    //@return <Function> done(cb)
     //cb的回调参数为验证通过结果和所有的错误验证状态
-    //只有当执行go()时，才同时执行验证过程
+    //只有当执行done()时，才同时执行验证过程
     V.parallel = function() {
         var args = [];
         if (arguments.length == 0) return;
@@ -548,12 +549,12 @@
             args = arguments[0];
         } else args = Array.prototype.slice.call(arguments);
         return {
-            go: function(cb) {
+            done: function(cb) {
                 var toTest = [];
                 args.forEach(function(item) {
                     toTest.push((function(v) {
                         return new Promise(function(resolve, reject) {
-                            v.go(function(ret) { resolve(ret); });
+                            v.done(function(ret) { resolve(ret); });
                         });
                     }(item)));
                 })
