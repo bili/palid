@@ -91,7 +91,9 @@ var check = V('.testcase5 input[name="hobbies"]')
     .notEmpty()
     .range(1, 2, '已选择#{select}个（值为#{input}），请至少选择#{$0}个，最多选择#{$1}个')
 function runCase5() {
-    check.done('ok');
+    check.done(function(ret) {
+        console.log(ret);
+    });
 }
 var select = V('.testcase6 select')
     .notEmpty()
