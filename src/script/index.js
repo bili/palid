@@ -74,11 +74,15 @@ function runCase3() {
         //.notEmpty('date不能为空')
         //.range(Date('2010-02-03'), Date(), '#{input}不在(#{$0}~#{$1})内')
         //.done('ok');
-    V('input[name="date"]')
+    V('input[name="date"]').each(function(v) {
+        console.log(v);
+        /*v
         .notEmpty('date不能为空')
         .match('date', '日期格式yyyy-mm-dd')
         .range('2010-02-03', '2016-02-03', '不在(#{$0}~#{$1})内')
-        .done('ok');
+        .done('ok');*/
+        
+    })
 }
 function runCase4() {
     V('.testcase4 input[name="num"]')

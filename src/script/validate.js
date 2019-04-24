@@ -124,6 +124,7 @@
     function _V(el) {
         this.el = el;
         this.dom = $(el);
+        console.log(this.dom);
         if (this.dom.length == 0) {
             throw new Error(tmpl('不存在选择器#{el}', {el: this.el}));
         }
@@ -205,6 +206,13 @@
         }
     };
 
+    _V.prototype.each = function(cb) {
+        console.log(this.dom);
+        this.dom.each(function(d) {
+            cb(1)
+        });
+    };
+    
     //核心函数
     //匹配输入是否满足条件
     //@param pattern<Array|Pattern|PatternWord|Function> 匹配规则
