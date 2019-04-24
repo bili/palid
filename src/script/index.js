@@ -1,9 +1,8 @@
 var inspectBtn = document.querySelector('.run');
 inspectBtn.addEventListener('click', function (e) {
     e.preventDefault();
-    // var n = document.querySelector('.testcases').value;
-    // eval('runCase'+n+'()');
-    runCase3()
+    var n = document.querySelector('.testcases').value;
+    eval('runCase'+n+'()');
 }, false);
 
 function runCase1() {
