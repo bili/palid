@@ -2,7 +2,7 @@
 Client-Side Javascript Validation
 
 # Demo
-更多实例可以参考[demo](https://codesandbox.io/s/lr173y6nom?fontsize=14)，也可以直接双击运行页面`docs/index.html`查看效果。
+更多实例可以参考[demo](https://codesandbox.io/embed/lr173y6nom?fontsize=14)，也可以直接双击运行页面`docs/index.html`查看效果。
 
 ## 特性
 1. 支持ajax、settimeout等延时验证
