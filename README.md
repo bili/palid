@@ -1,7 +1,7 @@
 # Palid
 Client-Side Javascript Validation
 
-更多实例可以参考[`docs/index.html`](https://github.com/bili/palid/blob/master/docs/index.html)，可直接双击运行页面查看效果。
+更多实例可以参考[`src/script/index.js`](https://github.com/bili/palid/blob/master/src/script/index.js)，也可以直接双击运行页面查看效果。
 
 ## 特性
 1. 支持ajax、settimeout等延时验证
