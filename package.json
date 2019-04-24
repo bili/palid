@@ -1,8 +1,12 @@
 {
   "name": "validate",
   "description": "Client-Side Javascript Validation",
-  "version": "2.0.0",
-  "main": "index.html",
+  "version": "0.5.0",
+  "main": "dist/validate.min.js",
+  "scripts": {
+    "dev": "cross-env NODE_ENV=dev webpack",
+    "build": "cross-env NODE_ENV=prod webpack"
+  },
   "homepage": "https://github.com/bili/validate",
   "repository": {
     "type": "git",
@@ -13,13 +17,14 @@
   },
   "license": "MIT",
   "keywords": [
-    "validate"
+    "validate",
+    "javascript",
+    "form",
+    "input"
   ],
   "devDependencies": {
-    "gulp": "^3.9.1",
-    "gulp-clean-css": "^3.0.3",
-    "gulp-rename": "^1.2.2",
-    "gulp-uglify": "^2.0.1",
-    "pump": "^1.0.2"
+    "cross-env": "^5.2.0",
+    "webpack": "^4.29.6",
+    "webpack-cli": "^3.3.0"
   }
 }

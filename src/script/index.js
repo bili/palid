@@ -1,9 +1,13 @@
+let V = require('../../dist/validate.min.js')
+
 var inspectBtn = document.querySelector('.run');
 inspectBtn.addEventListener('click', function (e) {
     e.preventDefault();
     var n = document.querySelector('.testcases').value;
     eval('runCase'+n+'()');
 }, false);
+
+V.pattern('positive-integer', /^[0-9]*[1-9][0-9]*$/);
 
 function runCase1() {
     /*
