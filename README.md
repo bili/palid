@@ -1,6 +1,7 @@
 # Palid
 Client-Side Javascript Validation
-可以参考`docs/index.html`中的用例
+
+更多实例可以参考`docs/index.html`
 
 ## 特性
 1. 支持ajax、settimeout等延时验证
@@ -53,6 +54,4 @@ check.done('ok');
     color: #4CAF50;
 }
 ```
-
-更多用例请见 index.html
 
