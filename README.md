@@ -1,12 +1,13 @@
 # Palid
 Client-Side Javascript Validation
 
-更多实例可以参考[`src/script/index.js`](https://github.com/bili/palid/blob/master/src/script/index.js)，也可以直接双击运行页面查看效果。
+# Demo
+更多实例可以参考demo(https://codesandbox.io/s/lr173y6nom?fontsize=14)，也可以直接双击运行页面`docs/index.html`查看效果。
 
 ## 特性
 1. 支持ajax、settimeout等延时验证
 2. 支持类input、select、checkbox控件的验证
-3. 支持链式验证
+3. 支持链式验证，支持控制路径上的每一个验证节点/状态
 4. 支持自定义验证规则
 5. 支持顺序验证和同时验证
 

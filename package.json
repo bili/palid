@@ -1,7 +1,7 @@
 {
   "name": "palid",
   "description": "Client-Side Javascript Validation",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "main": "dist/palid.min.js",
   "scripts": {
     "dev": "cross-env NODE_ENV=dev webpack",
