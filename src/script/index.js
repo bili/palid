@@ -1,4 +1,4 @@
-let V = require('../../dist/validate.min.js')
+let V = require('../../src/script/palid.js')
 
 var inspectBtn = document.querySelector('.run');
 inspectBtn.addEventListener('click', function (e) {

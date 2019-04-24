@@ -1,5 +1,6 @@
-# validate
+# Palid
 Client-Side Javascript Validation
+可以参考`docs/index.html`中的用例
 
 ## 特性
 1. 支持ajax、settimeout等延时验证
@@ -9,15 +10,14 @@ Client-Side Javascript Validation
 5. 支持顺序验证和同时验证
 
 ## 安装
-下载并直接在页面引入脚本 validate.min.js</br>
 ```
-<script src="dist/script/validate.min.js"></script>
+npm install palid
 ```
 
-如果需要使用更多扩展规则，可以引入 validate.patterns.min.js，此文件不是必须文件，这里面会不断收集更多的验证规则方便开发者使用。
-  
 ## 使用
 ```
+import V from 'palid'
+
 V('input')
     .notEmpty()
     .match('integer','请输入整数')

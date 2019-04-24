@@ -1,15 +1,8 @@
 /*
- * Validate.js v0.4
- * 
  * Date: 2016-12-07
- * Github: bili/validate.js
+ * Github: https://github.com/bili/palid
  */
 
-//todos:
-//multiple selector
-//tag data-xxx
-
-//类似 jquery
 var $ = function (selector, context) {
     return new $.fn.init(selector, context);
 };
