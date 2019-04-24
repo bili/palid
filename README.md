@@ -38,5 +38,21 @@ check.done('ok');
 ```
 
 当且仅当执行`done()`时才进行验证</br>
+
+另外，还要在控件的同层插入一个class="msg"的dom，用于显示验证结果信息。
+```
+<input id="age" type="text">
+<span class="msg"></span>
+```
+还可以对显示效果个性化设置
+```
+.msg.fail {
+    color: #f44336;
+}
+.msg.ok {
+    color: #4CAF50;
+}
+```
+
 更多用例请见 index.html
 
