@@ -16,7 +16,9 @@
     };
     $.fn = $.prototype;
     $.fn.init = function(selector, context) {
-        var nodeList = (context || document).querySelectorAll(selector);
+        var nodeList;
+        if (isString(selector)) nodeList = (context || document).querySelectorAll(selector);
+        else nodeList = [selector];
         this.length = nodeList.length;
         for (var i = 0; i < this.length; i++) {
             this[i] = nodeList[i];
@@ -124,8 +126,7 @@
     function _V(el) {
         this.el = el;
         this.dom = $(el);
-        console.log(this.dom);
-        if (this.dom.length == 0) {
+        if (this.dom.length === 0) {
             throw new Error(tmpl('不存在选择器#{el}', {el: this.el}));
         }
         // 验证队列
@@ -206,10 +207,11 @@
         }
     };
 
+    //用于遍历一个选择器对应多个控件
+    //@param cb<Function> 每个V对应的验证回调，带入的参数为每个控件的验证对象
     _V.prototype.each = function(cb) {
-        console.log(this.dom);
-        this.dom.each(function(d) {
-            cb(1)
+        Array.prototype.forEach.call(this.dom, function(d) {
+            cb(_V.prototype.constructor(d))
         });
     };
     

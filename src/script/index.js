@@ -1,8 +1,9 @@
 var inspectBtn = document.querySelector('.run');
-inspectBtn.addEventListener('click', function(e) {
+inspectBtn.addEventListener('click', function (e) {
     e.preventDefault();
-    var n = document.querySelector('.testcases').value;
-    eval('runCase'+n+'()');
+    // var n = document.querySelector('.testcases').value;
+    // eval('runCase'+n+'()');
+    runCase3()
 }, false);
 
 function runCase1() {
@@ -23,12 +24,12 @@ function runCase1() {
         });
         */
 
-    
+
     //V('.testcase1 input[name="num1"]')
-        //.notEmpty('Name must not be empty.')
-        //.contains('test')
-        //.done('ok');
-        
+    //.notEmpty('Name must not be empty.')
+    //.contains('test')
+    //.done('ok');
+
 
     /*
     V('.testcase1 input[name="name"]')
@@ -47,20 +48,20 @@ function runCase1() {
         */
 
     V('.testcase1 input[name="num"]')
-        .match(function() {
+        .match(function () {
             //return document.querySelector('#option').checked;
             return V('#option').notEmpty()
         }, 'Option required.')
         .notEmpty()
         //这样编码更容易定义递进规则
         .match(['!empty', 'positive-integer', 'odd'], '请输入奇数')
-        .done(function(ret) {
+        .done(function (ret) {
             console.log(ret);
         });
 }
 function runCase2() {
     V('.testcase2 input[name="p2"]')
-        .match(function() {
+        .match(function () {
             return V('.testcase2 input[name="p1"]')
                 .notEmpty('P1密码不能为空')
                 .match(/^\w{6,20}$/g, 'P1密码不符合要求');
@@ -71,17 +72,25 @@ function runCase2() {
 }
 function runCase3() {
     //V('.testcase3 input[name="date"]')
-        //.notEmpty('date不能为空')
-        //.range(Date('2010-02-03'), Date(), '#{input}不在(#{$0}~#{$1})内')
-        //.done('ok');
-    V('input[name="date"]').each(function(v) {
-        console.log(v);
-        /*v
-        .notEmpty('date不能为空')
-        .match('date', '日期格式yyyy-mm-dd')
-        .range('2010-02-03', '2016-02-03', '不在(#{$0}~#{$1})内')
-        .done('ok');*/
-        
+    //.notEmpty('date不能为空')
+    //.range(Date('2010-02-03'), Date(), '#{input}不在(#{$0}~#{$1})内')
+    //.done('ok');
+    /* 这个与下面的写法效果一致
+    [].forEach.call(document.querySelectorAll('input[name="date"]'), function (dom) {
+        V(dom)
+            .notEmpty('date不能为空')
+            .match('date', '日期格式yyyy-mm-dd')
+            .range('2010-02-03', '2016-02-03', '不在(#{$0}~#{$1})内')
+            .done('ok');
+
+    }) */
+    V('input[name="date"]').each(function (v) {
+        v
+            .notEmpty('date不能为空')
+            .match('date', '日期格式yyyy-mm-dd')
+            .range('2010-02-03', '2016-02-03', '不在(#{$0}~#{$1})内')
+            .done('ok');
+
     })
 }
 function runCase4() {
@@ -91,11 +100,11 @@ function runCase4() {
         .range(-100, 200, '#{input}不在(#{$0}~#{$1})内')
         .done('ok');
 }
-var check = V('.testcase5 input[name="hobbies"]')
-    .notEmpty()
-    .range(1, 2, '已选择#{select}个（值为#{input}），请至少选择#{$0}个，最多选择#{$1}个')
 function runCase5() {
-    check.done(function(ret) {
+    var check = V('.testcase5 input[name="hobbies"]')
+        .notEmpty()
+        .range(1, 2, '已选择#{select}个（值为#{input}），请至少选择#{$0}个，最多选择#{$1}个')
+    check.done(function (ret) {
         console.log(ret);
     });
 }
@@ -103,7 +112,7 @@ var select = V('.testcase6 select')
     .notEmpty()
     .range(1, 2, '已选择#{select}个（值为#{input}），请至少选择#{$0}个，最多选择#{$1}个')
 function runCase6() {
-        select.done('ok');
+    select.done('ok');
 }
 function runCase7() {
     V.pattern('is-zh', /[\u4E00-\u9FA5\uF900-\uFA2D]/);
@@ -113,15 +122,15 @@ function runCase8() {
     V('.testcase8 input')
         .notEmpty('请输入正整数')
         .match('integer')
-        .done(function(s) {
+        .done(function (s) {
             console.log(s);
         });
 }
 function runCase9() {
     var a = V('.testcase9 input[name="num"]')
         .match(['!empty', 'integer'], '#{input} is not integer')
-        .defer(function(v, resolve, reject) {
-            setTimeout(function() {
+        .defer(function (v, resolve, reject) {
+            setTimeout(function () {
                 if (v > 24) resolve();
                 else reject();
             }, 2000);
@@ -129,14 +138,14 @@ function runCase9() {
     var b = V('.testcase9 input[name="hobbies"]').notEmpty().range(1, 2);
     var c = V('.testcase9 input[name="name"]')
         .match('positive-integer', 'not integer')
-        .defer(function(v, resolve, reject) {
-            setTimeout(function() {
+        .defer(function (v, resolve, reject) {
+            setTimeout(function () {
                 if (v > 24) resolve();
                 else reject();
             }, 2000);
         }, '必须大于24')
-        //.match('has-zh', '请输入包含中文的字符串')
-    V.serial(a, b, c).done(function(flag, status) {
+    //.match('has-zh', '请输入包含中文的字符串')
+    V.serial(a, b, c).done(function (flag, status) {
         console.log(flag, status);
     });
     // V.parallel([a, b, c]).done(function(flag, vs) {
@@ -149,36 +158,36 @@ function runCase10() {
 var v = V('.testcase11 input')
     .notEmpty()
     .match('positive-integer', '#{input} is not positive-integer')
-    .defer(function(v, resolve, reject) {
+    .defer(function (v, resolve, reject) {
         var that = this;
-        setTimeout(function() {
+        setTimeout(function () {
             if (v > 24) resolve();
             else reject();
         }, 2000);
     }, '必须大于24')
-    .defer(function(v, resolve, reject) {
+    .defer(function (v, resolve, reject) {
         var that = this;
-        setTimeout(function() {
+        setTimeout(function () {
             if (v > 44) resolve();
             else reject();
         }, 2000);
     }, '必须大于44')
-    .match(function(v) {
+    .match(function (v) {
         return v == 50;
     }, '数字只能填50');
 function runCase11() {
     //var v = V('.testcase11 input')
-        //.notEmpty()
-        //.match('positive-integer', '#{input} is not positive-integer')
-        //.match(function(v) {
-            //return v > 40;
-        //}, '数字须大于40')
-        //.defer(function(v, resolve, reject) {
-            //var that = this;
-            //setTimeout(function() {
-                //if (v == 54) resolve();
-                //else reject();
-            //}, 2000);
-        //}, '必须大等于54')
-        v.done('yes');
+    //.notEmpty()
+    //.match('positive-integer', '#{input} is not positive-integer')
+    //.match(function(v) {
+    //return v > 40;
+    //}, '数字须大于40')
+    //.defer(function(v, resolve, reject) {
+    //var that = this;
+    //setTimeout(function() {
+    //if (v == 54) resolve();
+    //else reject();
+    //}, 2000);
+    //}, '必须大等于54')
+    v.done('yes');
 }
