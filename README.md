@@ -1,7 +1,14 @@
 # validate
 Client-Side Javascript Validation
 
-### 安装
+## 特性
+1. 支持ajax、settimeout等延时验证
+2. 支持类input、select、checkbox控件的验证
+3. 支持链式验证
+4. 支持自定义验证规则
+5. 支持顺序验证和同时验证
+
+## 安装
 下载并直接在页面引入脚本 validate.min.js</br>
 ```
 <script src="dist/script/validate.min.js"></script>
@@ -9,7 +16,7 @@ Client-Side Javascript Validation
 
 如果需要使用更多扩展规则，可以引入 validate.patterns.min.js，此文件不是必须文件，这里面会不断收集更多的验证规则方便开发者使用。
   
-### 使用
+## 使用
 ```
 V('input')
     .notEmpty()
@@ -33,17 +40,3 @@ check.done('ok');
 当且仅当执行`done()`时才进行验证</br>
 更多用例请见 index.html
 
-### 更新
-#### v0.3-2017/03/22
-1. 将go()调整为done()
-2. done()在通过的情况下也会在回调中返回对应dom列表
-
-#### v0.2-2016/12/13
-1. 支持ajax、settimeout等延时验证
-2. 只保留最基本的验证规则，扩展的验证规则都移到 dist/script/patterns.min.js 中
-
-#### v0.1-2016/12/09
-1. 支持类input、select、checkbox控件的验证
-2. 支持链式验证
-3. 支持自定义验证规则
-4. 支持顺序验证和同时验证
